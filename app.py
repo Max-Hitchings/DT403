@@ -138,10 +138,11 @@ def revenue_generation() -> Response:
     return jsonify({"dates": dates, "revenues": revenues})
 
 
+# filepath: c:\Users\2796zb\OneDrive - BP\Apprentiship\python\DT403\app.py
 @app.route("/api/product_category_popularity")
 def product_category_popularity() -> Response:
     query = """
-    SELECT pc.category_name, SUM(od.price_at_time * od.quantity_ordered) AS total_sales
+    SELECT pc.category_name, SUM(od.order_value * od.quantity) AS total_sales
     FROM products p
     JOIN product_categories pc ON p.category_id = pc.category_id
     JOIN order_details od ON p.product_id = od.product_id
@@ -149,7 +150,6 @@ def product_category_popularity() -> Response:
     ORDER BY total_sales DESC;
     """
     result = query_db(query)
-
     categories = [row[0] for row in result]
     sales = [row[1] for row in result]
     return jsonify({"categories": categories, "sales": sales})
